@@ -10,66 +10,105 @@ body {
 .topbar {
   background: #1a1f2b;
   padding: 14px 20px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
   border-bottom: 3px solid #2a3346;
 }
 
 .topbar h1 {
   margin: 0;
   font-size: 20px;
-  white-space: nowrap;
 }
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  align-items: center;
-  flex: 1;
-}
-
-.controls label {
-  font-size: 13px;
-  color: #9aa4b8;
-}
-
-.controls select, .controls input[type="text"] {
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #333c4d;
-  background: #232838;
-  color: #fff;
-}
-
-.controls input[type="color"] {
-  width: 36px;
-  height: 32px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.controls button {
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: none;
-  background: #2f6fed;
-  color: #fff;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.controls button:hover { background: #1e5fd9; }
 
 main {
   display: flex;
   gap: 20px;
   padding: 20px;
   align-items: flex-start;
+  justify-content: center;
   flex-wrap: wrap;
+}
+
+.side-panel {
+  background: #1a1f2b;
+  border-radius: 10px;
+  width: 240px;
+  min-height: 900px;
+  display: flex;
+  align-items: center;
+}
+
+.panel-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.field-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-group label {
+  font-size: 13px;
+  color: #9aa4b8;
+  text-align: center;
+}
+
+.field-group select,
+.field-group input[type="text"] {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #333c4d;
+  background: #232838;
+  color: #fff;
+  text-align: center;
+}
+
+.field-group input[type="color"] {
+  width: 60px;
+  height: 34px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.button-group {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.button-group button {
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 6px;
+  border: none;
+  background: #2f6fed;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.button-group button:hover { background: #1e5fd9; }
+
+#resetBtn { background: #4a3452; }
+#resetBtn:hover { background: #5b3f66; }
+
+.hint {
+  font-size: 11px;
+  color: #7f8aa0;
+  text-align: center;
+  line-height: 1.4;
+  margin-top: 4px;
 }
 
 #capture-area {
@@ -96,7 +135,6 @@ main {
     #35934a 50px,
     #35934a 100px
   );
-  border: 4px solid #fff;
   border-radius: 8px;
   margin: 0 auto;
   overflow: hidden;
@@ -104,13 +142,24 @@ main {
 
 .field-line {
   position: absolute;
-  border: 2px solid rgba(255,255,255,0.85);
+  border-color: rgba(255,255,255,0.85);
+}
+
+.border-frame {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 4px solid rgba(255,255,255,0.85);
+  border-radius: 8px;
+  box-sizing: border-box;
 }
 
 .center-circle {
   width: 140px;
   height: 140px;
   border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.85);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -129,11 +178,19 @@ main {
   height: 100px;
   left: 50%;
   transform: translateX(-50%);
+  border: 2px solid rgba(255,255,255,0.85);
+  box-sizing: border-box;
+}
+
+.box-top {
+  top: 0;
   border-top: none;
 }
 
-.box-top { top: 0; border-top: none; }
-.box-bottom { bottom: 0; border-bottom: none; }
+.box-bottom {
+  bottom: 0;
+  border-bottom: none;
+}
 
 .player {
   position: absolute;
@@ -215,12 +272,6 @@ main {
   margin: 0;
 }
 
-.hint {
-  font-size: 12px;
-  color: #7f8aa0;
-  margin-top: 12px;
-}
-
 .field.drag-over {
   outline: 3px dashed #ffd54a;
 }
@@ -270,7 +321,8 @@ main {
 #saveEdit { background: #2f6fed; color: #fff; }
 #cancelEdit { background: #333c4d; color: #fff; }
 
-@media (max-width: 720px) {
+@media (max-width: 1100px) {
   main { flex-direction: column; align-items: center; }
+  .side-panel { width: 92vw; min-height: auto; }
   .bench-panel { width: 92vw; }
 }

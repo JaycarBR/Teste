@@ -47,6 +47,7 @@ const fieldEl = document.getElementById('field');
 const benchEl = document.getElementById('bench');
 const formationSelect = document.getElementById('formation');
 const kitColorInput = document.getElementById('kitColor');
+const borderColorInput = document.getElementById('borderColor');
 const teamNameInput = document.getElementById('teamName');
 const teamTitle = document.getElementById('teamTitle');
 
@@ -70,10 +71,18 @@ function render() {
   players.forEach(p => fieldEl.appendChild(renderPlayerOnField(p)));
   benchEl.innerHTML = '';
   benchPlayers.forEach(p => benchEl.appendChild(renderBenchPlayer(p)));
+  applyBorderColor();
 }
 
 function shirtStyle() {
   return `background:${kitColorInput.value};`;
+}
+
+function applyBorderColor() {
+  const color = borderColorInput.value;
+  document.querySelectorAll('.field-line').forEach(el => {
+    el.style.borderColor = color;
+  });
 }
 
 function renderPlayerOnField(p) {
@@ -181,17 +190,66 @@ document.getElementById('cancelEdit').addEventListener('click', () => {
 
 formationSelect.addEventListener('change', () => buildFormation(formationSelect.value));
 kitColorInput.addEventListener('input', render);
+borderColorInput.addEventListener('input', applyBorderColor);
 teamNameInput.addEventListener('input', () => teamTitle.textContent = teamNameInput.value);
 
 document.getElementById('resetBtn').addEventListener('click', () => buildFormation(formationSelect.value));
 
-document.getElementById('exportBtn').addEventListener('click', () => {
+document.getElementById('exportImgBtn').addEventListener('click', () => {
   html2canvas(document.getElementById('capture-area'), { backgroundColor: '#10141c', scale: 2 }).then(canvas => {
     const link = document.createElement('a');
     link.download = 'escalacao.png';
     link.href = canvas.toDataURL('image/png');
     link.click();
   });
+});
+
+document.getElementById('saveFileBtn').addEventListener('click', () => {
+  const data = {
+    teamName: teamNameInput.value,
+    formation: formationSelect.value,
+    kitColor: kitColorInput.value,
+    borderColor: borderColorInput.value,
+    players,
+    benchPlayers,
+    savedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  const safeName = (teamNameInput.value || 'time').trim().replace(/\s+/g, '_');
+  link.download = `escalacao_${safeName}.json`;
+  link.href = url;
+  link.click();
+  URL.revokeObjectURL(url);
+});
+
+document.getElementById('loadFileBtn').addEventListener('click', () => {
+  document.getElementById('loadFileInput').click();
+});
+
+document.getElementById('loadFileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      teamNameInput.value = data.teamName || 'Meu Time';
+      teamTitle.textContent = teamNameInput.value;
+      formationSelect.value = data.formation || '4-4-2';
+      kitColorInput.value = data.kitColor || '#1e5fd9';
+      borderColorInput.value = data.borderColor || '#ffffff';
+      players = data.players || [];
+      benchPlayers = data.benchPlayers || [];
+      idCounter = Math.max(0, ...players.map(p => p.id), ...benchPlayers.map(p => p.id)) + 1;
+      render();
+    } catch (err) {
+      alert('Arquivo inválido. Certifique-se de escolher um arquivo .json salvo por este site.');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
 });
 
 buildFormation('4-4-2');
