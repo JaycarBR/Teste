@@ -1,55 +1,55 @@
 const FORMATIONS = {
   "4-4-2": [
-    {x:50,y:92,pos:"GOL"},
-    {x:15,y:75,pos:"LD"},{x:38,y:78,pos:"ZAG"},{x:62,y:78,pos:"ZAG"},{x:85,y:75,pos:"LE"},
-    {x:15,y:50,pos:"MD"},{x:38,y:52,pos:"MC"},{x:62,y:52,pos:"MC"},{x:85,y:50,pos:"ME"},
-    {x:38,y:20,pos:"ATA"},{x:62,y:20,pos:"ATA"}
+    {x:50,y:92,pos:"GK"},
+    {x:15,y:75,pos:"RB"},{x:38,y:78,pos:"CB"},{x:62,y:78,pos:"CB"},{x:85,y:75,pos:"LB"},
+    {x:15,y:50,pos:"RM"},{x:38,y:52,pos:"CM"},{x:62,y:52,pos:"CM"},{x:85,y:50,pos:"LM"},
+    {x:38,y:20,pos:"ST"},{x:62,y:20,pos:"ST"}
   ],
   "4-4-2-diamond": [
-    {x:50,y:92,pos:"GOL"},
-    {x:15,y:75,pos:"LD"},{x:38,y:78,pos:"ZAG"},{x:62,y:78,pos:"ZAG"},{x:85,y:75,pos:"LE"},
-    {x:50,y:62,pos:"VOL"},
-    {x:22,y:45,pos:"MC"},{x:78,y:45,pos:"MC"},
-    {x:50,y:32,pos:"MEA"},
-    {x:38,y:15,pos:"ATA"},{x:62,y:15,pos:"ATA"}
+    {x:50,y:92,pos:"GK"},
+    {x:15,y:75,pos:"RB"},{x:38,y:78,pos:"CB"},{x:62,y:78,pos:"CB"},{x:85,y:75,pos:"LB"},
+    {x:50,y:62,pos:"DM"},
+    {x:22,y:45,pos:"CM"},{x:78,y:45,pos:"CM"},
+    {x:50,y:32,pos:"AM"},
+    {x:38,y:15,pos:"ST"},{x:62,y:15,pos:"ST"}
   ],
   "4-3-3": [
-    {x:50,y:92,pos:"GOL"},
-    {x:15,y:75,pos:"LD"},{x:38,y:78,pos:"ZAG"},{x:62,y:78,pos:"ZAG"},{x:85,y:75,pos:"LE"},
-    {x:30,y:52,pos:"MC"},{x:50,y:55,pos:"VOL"},{x:70,y:52,pos:"MC"},
-    {x:20,y:20,pos:"PE"},{x:50,y:15,pos:"ATA"},{x:80,y:20,pos:"PD"}
+    {x:50,y:92,pos:"GK"},
+    {x:15,y:75,pos:"RB"},{x:38,y:78,pos:"CB"},{x:62,y:78,pos:"CB"},{x:85,y:75,pos:"LB"},
+    {x:30,y:52,pos:"CM"},{x:50,y:55,pos:"DM"},{x:70,y:52,pos:"CM"},
+    {x:20,y:20,pos:"LW"},{x:50,y:15,pos:"ST"},{x:80,y:20,pos:"RW"}
   ],
   "4-3-3-meia": [
-    {x:50,y:92,pos:"GOL"},
-    {x:15,y:75,pos:"LD"},{x:38,y:78,pos:"ZAG"},{x:62,y:78,pos:"ZAG"},{x:85,y:75,pos:"LE"},
-    {x:30,y:58,pos:"VOL"},{x:70,y:58,pos:"VOL"},
-    {x:50,y:38,pos:"MEA"},
-    {x:20,y:20,pos:"PE"},{x:50,y:15,pos:"ATA"},{x:80,y:20,pos:"PD"}
+    {x:50,y:92,pos:"GK"},
+    {x:15,y:75,pos:"RB"},{x:38,y:78,pos:"CB"},{x:62,y:78,pos:"CB"},{x:85,y:75,pos:"LB"},
+    {x:30,y:58,pos:"DM"},{x:70,y:58,pos:"DM"},
+    {x:50,y:38,pos:"AM"},
+    {x:20,y:20,pos:"LW"},{x:50,y:15,pos:"ST"},{x:80,y:20,pos:"RW"}
   ],
   "3-5-2": [
-    {x:50,y:92,pos:"GOL"},
-    {x:25,y:76,pos:"ZAG"},{x:50,y:80,pos:"ZAG"},{x:75,y:76,pos:"ZAG"},
-    {x:10,y:52,pos:"LD"},{x:32,y:55,pos:"MC"},{x:50,y:58,pos:"VOL"},{x:68,y:55,pos:"MC"},{x:90,y:52,pos:"LE"},
-    {x:38,y:20,pos:"ATA"},{x:62,y:20,pos:"ATA"}
+    {x:50,y:92,pos:"GK"},
+    {x:25,y:76,pos:"CB"},{x:50,y:80,pos:"CB"},{x:75,y:76,pos:"CB"},
+    {x:10,y:52,pos:"RB"},{x:32,y:55,pos:"CM"},{x:50,y:58,pos:"DM"},{x:68,y:55,pos:"CM"},{x:90,y:52,pos:"LB"},
+    {x:38,y:20,pos:"ST"},{x:62,y:20,pos:"ST"}
   ],
   "4-2-3-1": [
-    {x:50,y:92,pos:"GOL"},
-    {x:15,y:75,pos:"LD"},{x:38,y:78,pos:"ZAG"},{x:62,y:78,pos:"ZAG"},{x:85,y:75,pos:"LE"},
-    {x:38,y:60,pos:"VOL"},{x:62,y:60,pos:"VOL"},
-    {x:20,y:38,pos:"MEI"},{x:50,y:40,pos:"MEI"},{x:80,y:38,pos:"MEI"},
-    {x:50,y:15,pos:"ATA"}
+    {x:50,y:92,pos:"GK"},
+    {x:15,y:75,pos:"RB"},{x:38,y:78,pos:"CB"},{x:62,y:78,pos:"CB"},{x:85,y:75,pos:"LB"},
+    {x:38,y:60,pos:"DM"},{x:62,y:60,pos:"DM"},
+    {x:20,y:38,pos:"RM"},{x:50,y:40,pos:"AM"},{x:80,y:38,pos:"LM"},
+    {x:50,y:15,pos:"ST"}
   ],
   "3-4-3": [
-    {x:50,y:92,pos:"GOL"},
-    {x:25,y:76,pos:"ZAG"},{x:50,y:80,pos:"ZAG"},{x:75,y:76,pos:"ZAG"},
-    {x:12,y:52,pos:"ME"},{x:38,y:55,pos:"MC"},{x:62,y:55,pos:"MC"},{x:88,y:52,pos:"MD"},
-    {x:20,y:20,pos:"PE"},{x:50,y:15,pos:"ATA"},{x:80,y:20,pos:"PD"}
+    {x:50,y:92,pos:"GK"},
+    {x:25,y:76,pos:"CB"},{x:50,y:80,pos:"CB"},{x:75,y:76,pos:"CB"},
+    {x:12,y:52,pos:"LM"},{x:38,y:55,pos:"CM"},{x:62,y:55,pos:"CM"},{x:88,y:52,pos:"RM"},
+    {x:20,y:20,pos:"LW"},{x:50,y:15,pos:"ST"},{x:80,y:20,pos:"RW"}
   ],
   "5-3-2": [
-    {x:50,y:92,pos:"GOL"},
-    {x:8,y:70,pos:"LD"},{x:28,y:78,pos:"ZAG"},{x:50,y:80,pos:"ZAG"},{x:72,y:78,pos:"ZAG"},{x:92,y:70,pos:"LE"},
-    {x:30,y:52,pos:"MC"},{x:50,y:55,pos:"VOL"},{x:70,y:52,pos:"MC"},
-    {x:38,y:20,pos:"ATA"},{x:62,y:20,pos:"ATA"}
+    {x:50,y:92,pos:"GK"},
+    {x:8,y:70,pos:"RB"},{x:28,y:78,pos:"CB"},{x:50,y:80,pos:"CB"},{x:72,y:78,pos:"CB"},{x:92,y:70,pos:"LB"},
+    {x:30,y:52,pos:"CM"},{x:50,y:55,pos:"DM"},{x:70,y:52,pos:"CM"},
+    {x:38,y:20,pos:"ST"},{x:62,y:20,pos:"ST"}
   ]
 };
 
@@ -59,6 +59,7 @@ let idCounter = 0;
 let editingId = null;
 
 const fieldEl = document.getElementById('field');
+const stripesEl = document.getElementById('stripes');
 const benchEl = document.getElementById('bench');
 const formationSelect = document.getElementById('formation');
 const kitColorInput = document.getElementById('kitColor');
@@ -66,23 +67,33 @@ const borderColorInput = document.getElementById('borderColor');
 const teamNameInput = document.getElementById('teamName');
 const teamTitle = document.getElementById('teamTitle');
 
-function newPlayer(pos, x, y, number) {
+function buildStripes() {
+  stripesEl.innerHTML = '';
+  const stripeCount = 9;
+  for (let i = 0; i < stripeCount; i++) {
+    const div = document.createElement('div');
+    div.className = 'stripe' + (i % 2 === 0 ? ' light' : ' dark');
+    stripesEl.appendChild(div);
+  }
+}
+
+function newPlayer(pos, x, y) {
   idCounter++;
-  return { id: idCounter, name: pos, number: number, pos, x, y };
+  return { id: idCounter, name: pos, pos, x, y };
 }
 
 function initFormation(key) {
   const layout = FORMATIONS[key];
-  players = layout.map((slot, i) => newPlayer(slot.pos, slot.x, slot.y, i + 1));
-  benchPlayers = [1,2,3,4,5].map((n) => {
+  players = layout.map((slot) => newPlayer(slot.pos, slot.x, slot.y));
+  benchPlayers = [1,2,3,4,5].map(() => {
     idCounter++;
-    return { id: idCounter, name: "Reserva", number: 10 + n, pos: "RES" };
+    return { id: idCounter, name: "Reserva", pos: "RES" };
   });
   render();
 }
 
 // Ao trocar formação: reposiciona jogadores existentes nos novos slots,
-// preservando nome/número editados. Não recria o time do zero.
+// preservando nomes editados. Não recria o time do zero.
 function changeFormation(key) {
   const layout = FORMATIONS[key];
 
@@ -98,7 +109,7 @@ function changeFormation(key) {
       if (benchPlayers.length > 0) {
         moved = benchPlayers.shift();
       } else {
-        moved = newPlayer(layout[i].pos, layout[i].x, layout[i].y, i + 1);
+        moved = newPlayer(layout[i].pos, layout[i].x, layout[i].y);
       }
       moved.x = layout[i].x;
       moved.y = layout[i].y;
@@ -138,7 +149,7 @@ function renderPlayerOnField(p) {
   div.draggable = true;
   div.dataset.id = p.id;
   div.innerHTML = `
-    <div class="shirt" style="${shirtStyle()}">${p.number}</div>
+    <div class="shirt" style="${shirtStyle()}"></div>
     <div class="player-name">${p.name}</div>
     <div class="player-pos">${p.pos}</div>
   `;
@@ -165,8 +176,8 @@ function renderBenchPlayer(p) {
   div.draggable = true;
   div.dataset.id = p.id;
   div.innerHTML = `
-    <div class="shirt" style="${shirtStyle()}">${p.number}</div>
-    <span>${p.name} (${p.pos})</span>
+    <div class="shirt" style="${shirtStyle()}"></div>
+    <span class="bench-player-name">${p.name} (${p.pos})</span>
   `;
   div.addEventListener('dragstart', (e) => {
     e.dataTransfer.setData('text/plain', JSON.stringify({ id: p.id, from: 'bench' }));
@@ -285,7 +296,6 @@ function openEdit(id, from) {
   const list = from === 'field' ? players : benchPlayers;
   const p = list.find(pl => pl.id === id);
   document.getElementById('editName').value = p.name;
-  document.getElementById('editNumber').value = p.number;
   const posSelect = document.getElementById('editPos');
   posSelect.value = p.pos;
   if (posSelect.value !== p.pos) {
@@ -302,7 +312,6 @@ document.getElementById('saveEdit').addEventListener('click', () => {
   const list = editingId.from === 'field' ? players : benchPlayers;
   const p = list.find(pl => pl.id === editingId.id);
   p.name = document.getElementById('editName').value || p.name;
-  p.number = parseInt(document.getElementById('editNumber').value) || p.number;
   p.pos = document.getElementById('editPos').value || p.pos;
   document.getElementById('editModal').classList.add('hidden');
   render();
@@ -320,7 +329,13 @@ teamNameInput.addEventListener('input', () => teamTitle.textContent = teamNameIn
 document.getElementById('resetBtn').addEventListener('click', () => initFormation(formationSelect.value));
 
 document.getElementById('exportImgBtn').addEventListener('click', () => {
-  html2canvas(document.getElementById('capture-area'), { backgroundColor: '#10141c', scale: 2 }).then(canvas => {
+  const captureEl = document.getElementById('capture-area');
+  html2canvas(captureEl, {
+    backgroundColor: '#10141c',
+    scale: 2,
+    useCORS: true,
+    logging: false
+  }).then(canvas => {
     const link = document.createElement('a');
     link.download = 'escalacao.png';
     link.href = canvas.toDataURL('image/png');
@@ -376,4 +391,5 @@ document.getElementById('loadFileInput').addEventListener('change', (e) => {
   e.target.value = '';
 });
 
+buildStripes();
 initFormation('4-4-2');
