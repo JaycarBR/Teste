@@ -71,18 +71,10 @@ function render() {
   players.forEach(p => fieldEl.appendChild(renderPlayerOnField(p)));
   benchEl.innerHTML = '';
   benchPlayers.forEach(p => benchEl.appendChild(renderBenchPlayer(p)));
-  applyBorderColor();
 }
 
 function shirtStyle() {
-  return `background:${kitColorInput.value};`;
-}
-
-function applyBorderColor() {
-  const color = borderColorInput.value;
-  document.querySelectorAll('.field-line').forEach(el => {
-    el.style.borderColor = color;
-  });
+  return `background:${kitColorInput.value}; border-color:${borderColorInput.value};`;
 }
 
 function renderPlayerOnField(p) {
@@ -190,7 +182,7 @@ document.getElementById('cancelEdit').addEventListener('click', () => {
 
 formationSelect.addEventListener('change', () => buildFormation(formationSelect.value));
 kitColorInput.addEventListener('input', render);
-borderColorInput.addEventListener('input', applyBorderColor);
+borderColorInput.addEventListener('input', render);
 teamNameInput.addEventListener('input', () => teamTitle.textContent = teamNameInput.value);
 
 document.getElementById('resetBtn').addEventListener('click', () => buildFormation(formationSelect.value));
