@@ -5,10 +5,25 @@ const FORMATIONS = {
     {x:15,y:50,pos:"MD"},{x:38,y:52,pos:"MC"},{x:62,y:52,pos:"MC"},{x:85,y:50,pos:"ME"},
     {x:38,y:20,pos:"ATA"},{x:62,y:20,pos:"ATA"}
   ],
+  "4-4-2-diamond": [
+    {x:50,y:92,pos:"GOL"},
+    {x:15,y:75,pos:"LD"},{x:38,y:78,pos:"ZAG"},{x:62,y:78,pos:"ZAG"},{x:85,y:75,pos:"LE"},
+    {x:50,y:62,pos:"VOL"},
+    {x:22,y:45,pos:"MC"},{x:78,y:45,pos:"MC"},
+    {x:50,y:32,pos:"MEA"},
+    {x:38,y:15,pos:"ATA"},{x:62,y:15,pos:"ATA"}
+  ],
   "4-3-3": [
     {x:50,y:92,pos:"GOL"},
     {x:15,y:75,pos:"LD"},{x:38,y:78,pos:"ZAG"},{x:62,y:78,pos:"ZAG"},{x:85,y:75,pos:"LE"},
     {x:30,y:52,pos:"MC"},{x:50,y:55,pos:"VOL"},{x:70,y:52,pos:"MC"},
+    {x:20,y:20,pos:"PE"},{x:50,y:15,pos:"ATA"},{x:80,y:20,pos:"PD"}
+  ],
+  "4-3-3-meia": [
+    {x:50,y:92,pos:"GOL"},
+    {x:15,y:75,pos:"LD"},{x:38,y:78,pos:"ZAG"},{x:62,y:78,pos:"ZAG"},{x:85,y:75,pos:"LE"},
+    {x:30,y:58,pos:"VOL"},{x:70,y:58,pos:"VOL"},
+    {x:50,y:38,pos:"MEA"},
     {x:20,y:20,pos:"PE"},{x:50,y:15,pos:"ATA"},{x:80,y:20,pos:"PD"}
   ],
   "3-5-2": [
@@ -42,7 +57,6 @@ let players = [];
 let benchPlayers = [];
 let idCounter = 0;
 let editingId = null;
-let currentFormation = "4-4-2";
 
 const fieldEl = document.getElementById('field');
 const benchEl = document.getElementById('bench');
@@ -58,7 +72,6 @@ function newPlayer(pos, x, y, number) {
 }
 
 function initFormation(key) {
-  currentFormation = key;
   const layout = FORMATIONS[key];
   players = layout.map((slot, i) => newPlayer(slot.pos, slot.x, slot.y, i + 1));
   benchPlayers = [1,2,3,4,5].map((n) => {
@@ -68,39 +81,40 @@ function initFormation(key) {
   render();
 }
 
+// Ao trocar formação: reposiciona jogadores existentes nos novos slots,
+// preservando nome/número editados. Não recria o time do zero.
 function changeFormation(key) {
   const layout = FORMATIONS[key];
-  currentFormation = key;
 
   if (layout.length >= players.length) {
     players.forEach((p, i) => {
       p.x = layout[i].x;
       p.y = layout[i].y;
-      if (p.name === p.pos || !p.name) p.name = layout[i].pos;
+      if (!p.name || p.name === p.pos) p.name = layout[i].pos;
       p.pos = layout[i].pos;
     });
     for (let i = players.length; i < layout.length; i++) {
+      let moved;
       if (benchPlayers.length > 0) {
-        const moved = benchPlayers.shift();
-        moved.x = layout[i].x;
-        moved.y = layout[i].y;
-        moved.pos = layout[i].pos;
-        players.push(moved);
+        moved = benchPlayers.shift();
       } else {
-        players.push(newPlayer(layout[i].pos, layout[i].x, layout[i].y, i + 1));
+        moved = newPlayer(layout[i].pos, layout[i].x, layout[i].y, i + 1);
       }
+      moved.x = layout[i].x;
+      moved.y = layout[i].y;
+      if (!moved.name || moved.name === moved.pos || moved.name === "Reserva") moved.name = layout[i].pos;
+      moved.pos = layout[i].pos;
+      players.push(moved);
     }
   } else {
-    players.forEach((p, i) => {
-      if (i < layout.length) {
-        p.x = layout[i].x;
-        p.y = layout[i].y;
-        if (p.name === p.pos || !p.name) p.name = layout[i].pos;
-        p.pos = layout[i].pos;
-      }
-    });
     const extra = players.splice(layout.length);
-    extra.forEach(p => benchPlayers.push(p));
+    players.forEach((p, i) => {
+      p.x = layout[i].x;
+      p.y = layout[i].y;
+      if (!p.name || p.name === p.pos) p.name = layout[i].pos;
+      p.pos = layout[i].pos;
+    });
+    extra.forEach(p => { p.pos = "RES"; benchPlayers.push(p); });
   }
   render();
 }
@@ -169,6 +183,8 @@ function renderBenchPlayer(p) {
   return div;
 }
 
+// Troca jogadores quando um é solto exatamente sobre outro (titular<->titular,
+// titular<->reserva, ou reserva<->reserva), preservando slot (x/y/pos) de cada lado.
 function handleDropOnPlayer(e, targetId, targetFrom) {
   const data = JSON.parse(e.dataTransfer.getData('text/plain'));
   if (data.id === targetId && data.from === targetFrom) return;
@@ -177,9 +193,9 @@ function handleDropOnPlayer(e, targetId, targetFrom) {
     const a = players.find(pl => pl.id === data.id);
     const b = players.find(pl => pl.id === targetId);
     if (a && b) {
-      const ax = a.x, ay = a.y, apos = a.pos;
-      a.x = b.x; a.y = b.y; a.pos = b.pos;
-      b.x = ax; b.y = ay; b.pos = apos;
+      [a.x, b.x] = [b.x, a.x];
+      [a.y, b.y] = [b.y, a.y];
+      [a.pos, b.pos] = [b.pos, a.pos];
     }
   } else if (data.from === 'bench' && targetFrom === 'field') {
     const benchIdx = benchPlayers.findIndex(pl => pl.id === data.id);
@@ -187,7 +203,9 @@ function handleDropOnPlayer(e, targetId, targetFrom) {
     if (benchIdx !== -1 && fieldIdx !== -1) {
       const benchP = benchPlayers[benchIdx];
       const fieldP = players[fieldIdx];
-      benchP.x = fieldP.x; benchP.y = fieldP.y; benchP.pos = fieldP.pos;
+      const slot = { x: fieldP.x, y: fieldP.y, pos: fieldP.pos };
+      benchP.x = slot.x; benchP.y = slot.y; benchP.pos = slot.pos;
+      fieldP.pos = "RES";
       players[fieldIdx] = benchP;
       benchPlayers[benchIdx] = fieldP;
     }
@@ -197,17 +215,13 @@ function handleDropOnPlayer(e, targetId, targetFrom) {
     if (fieldIdx !== -1 && benchIdx !== -1) {
       const fieldP = players[fieldIdx];
       const benchP = benchPlayers[benchIdx];
-      fieldP.x = 0; fieldP.y = 0;
-      players[fieldIdx] = { ...benchP, x: fieldP.x, y: fieldP.y, pos: fieldP.pos };
-      players[fieldIdx].x = players[fieldIdx].x;
-      const savedPos = { pos: benchP.pos };
-      players.splice(fieldIdx, 1);
-      const targetFieldSlot = fieldP;
+      const slot = { x: fieldP.x, y: fieldP.y, pos: fieldP.pos };
+      benchP.x = slot.x; benchP.y = slot.y; benchP.pos = slot.pos;
+      fieldP.pos = "RES";
+      players[fieldIdx] = benchP;
       benchPlayers[benchIdx] = fieldP;
-      players.splice(fieldIdx, 0, { ...benchP, x: targetFieldSlot.x, y: targetFieldSlot.y, pos: targetFieldSlot.pos });
     }
   } else if (data.from === 'bench' && targetFrom === 'bench') {
-    const a = benchPlayers.find(pl => pl.id === data.id);
     const idxA = benchPlayers.findIndex(pl => pl.id === data.id);
     const idxB = benchPlayers.findIndex(pl => pl.id === targetId);
     if (idxA !== -1 && idxB !== -1) {
@@ -226,6 +240,7 @@ fieldEl.addEventListener('dragleave', () => fieldEl.classList.remove('drag-over'
 fieldEl.addEventListener('drop', (e) => {
   e.preventDefault();
   fieldEl.classList.remove('drag-over');
+  if (e.target.closest('.player')) return;
   const data = JSON.parse(e.dataTransfer.getData('text/plain'));
   const rect = fieldEl.getBoundingClientRect();
   const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -239,6 +254,7 @@ fieldEl.addEventListener('drop', (e) => {
     if (idx !== -1) {
       const p = benchPlayers[idx];
       benchPlayers.splice(idx, 1);
+      p.pos = "TIT";
       players.push({ ...p, x: clamp(x), y: clamp(y) });
     }
   }
@@ -248,12 +264,14 @@ fieldEl.addEventListener('drop', (e) => {
 benchEl.addEventListener('dragover', (e) => e.preventDefault());
 benchEl.addEventListener('drop', (e) => {
   e.preventDefault();
+  if (e.target.closest('.bench-player')) return;
   const data = JSON.parse(e.dataTransfer.getData('text/plain'));
   if (data.from === 'field') {
     const idx = players.findIndex(pl => pl.id === data.id);
     if (idx !== -1) {
       const p = players[idx];
       players.splice(idx, 1);
+      p.pos = "RES";
       benchPlayers.push(p);
       render();
     }
@@ -268,6 +286,15 @@ function openEdit(id, from) {
   const p = list.find(pl => pl.id === id);
   document.getElementById('editName').value = p.name;
   document.getElementById('editNumber').value = p.number;
+  const posSelect = document.getElementById('editPos');
+  posSelect.value = p.pos;
+  if (posSelect.value !== p.pos) {
+    const opt = document.createElement('option');
+    opt.value = p.pos;
+    opt.textContent = p.pos;
+    posSelect.appendChild(opt);
+    posSelect.value = p.pos;
+  }
   document.getElementById('editModal').classList.remove('hidden');
 }
 
@@ -276,6 +303,7 @@ document.getElementById('saveEdit').addEventListener('click', () => {
   const p = list.find(pl => pl.id === editingId.id);
   p.name = document.getElementById('editName').value || p.name;
   p.number = parseInt(document.getElementById('editNumber').value) || p.number;
+  p.pos = document.getElementById('editPos').value || p.pos;
   document.getElementById('editModal').classList.add('hidden');
   render();
 });
@@ -334,7 +362,6 @@ document.getElementById('loadFileInput').addEventListener('change', (e) => {
       teamNameInput.value = data.teamName || 'Meu Time';
       teamTitle.textContent = teamNameInput.value;
       formationSelect.value = data.formation || '4-4-2';
-      currentFormation = formationSelect.value;
       kitColorInput.value = data.kitColor || '#1e5fd9';
       borderColorInput.value = data.borderColor || '#ffffff';
       players = data.players || [];

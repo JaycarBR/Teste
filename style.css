@@ -313,24 +313,32 @@ main {
   background: #1a1f2b;
   padding: 20px;
   border-radius: 10px;
-  width: 260px;
+  width: 280px;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.modal-content input {
-  padding: 6px 8px;
+.modal-content label {
+  font-size: 12px;
+  color: #9aa4b8;
+}
+
+.modal-content input,
+.modal-content select {
+  padding: 8px;
   border-radius: 6px;
   border: 1px solid #333c4d;
   background: #232838;
   color: #fff;
+  font-size: 13px;
 }
 
 .modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  margin-top: 6px;
 }
 
 .modal-actions button {
