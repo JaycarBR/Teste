@@ -194,15 +194,22 @@ main {
 
 .player {
   position: absolute;
-  width: 64px;
+  width: 70px;
   transform: translate(-50%, -50%);
   text-align: center;
   cursor: grab;
   user-select: none;
   transition: top 0.25s ease, left 0.25s ease;
+  padding: 4px;
+  border-radius: 10px;
 }
 
 .player.dragging { opacity: 0.4; cursor: grabbing; }
+
+.player.drop-target {
+  background: rgba(255, 213, 74, 0.25);
+  outline: 2px dashed #ffd54a;
+}
 
 .shirt {
   width: 46px;
@@ -228,7 +235,17 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 70px;
+  margin: 0 auto 2px;
+}
+
+.player-pos {
+  font-size: 9px;
+  color: #cbd3e6;
+  background: rgba(0,0,0,0.35);
+  border-radius: 4px;
+  padding: 1px 4px;
   margin: 0 auto;
+  display: inline-block;
 }
 
 .bench-panel {
@@ -263,6 +280,11 @@ main {
   padding: 6px 8px;
   border-radius: 6px;
   cursor: grab;
+}
+
+.bench-player.drop-target {
+  background: rgba(255, 213, 74, 0.25);
+  outline: 2px dashed #ffd54a;
 }
 
 .bench-player .shirt {

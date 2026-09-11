@@ -42,6 +42,7 @@ let players = [];
 let benchPlayers = [];
 let idCounter = 0;
 let editingId = null;
+let currentFormation = "4-4-2";
 
 const fieldEl = document.getElementById('field');
 const benchEl = document.getElementById('bench');
@@ -56,13 +57,51 @@ function newPlayer(pos, x, y, number) {
   return { id: idCounter, name: pos, number: number, pos, x, y };
 }
 
-function buildFormation(key) {
+function initFormation(key) {
+  currentFormation = key;
   const layout = FORMATIONS[key];
   players = layout.map((slot, i) => newPlayer(slot.pos, slot.x, slot.y, i + 1));
   benchPlayers = [1,2,3,4,5].map((n) => {
     idCounter++;
     return { id: idCounter, name: "Reserva", number: 10 + n, pos: "RES" };
   });
+  render();
+}
+
+function changeFormation(key) {
+  const layout = FORMATIONS[key];
+  currentFormation = key;
+
+  if (layout.length >= players.length) {
+    players.forEach((p, i) => {
+      p.x = layout[i].x;
+      p.y = layout[i].y;
+      if (p.name === p.pos || !p.name) p.name = layout[i].pos;
+      p.pos = layout[i].pos;
+    });
+    for (let i = players.length; i < layout.length; i++) {
+      if (benchPlayers.length > 0) {
+        const moved = benchPlayers.shift();
+        moved.x = layout[i].x;
+        moved.y = layout[i].y;
+        moved.pos = layout[i].pos;
+        players.push(moved);
+      } else {
+        players.push(newPlayer(layout[i].pos, layout[i].x, layout[i].y, i + 1));
+      }
+    }
+  } else {
+    players.forEach((p, i) => {
+      if (i < layout.length) {
+        p.x = layout[i].x;
+        p.y = layout[i].y;
+        if (p.name === p.pos || !p.name) p.name = layout[i].pos;
+        p.pos = layout[i].pos;
+      }
+    });
+    const extra = players.splice(layout.length);
+    extra.forEach(p => benchPlayers.push(p));
+  }
   render();
 }
 
@@ -87,12 +126,21 @@ function renderPlayerOnField(p) {
   div.innerHTML = `
     <div class="shirt" style="${shirtStyle()}">${p.number}</div>
     <div class="player-name">${p.name}</div>
+    <div class="player-pos">${p.pos}</div>
   `;
   div.addEventListener('dragstart', (e) => {
     e.dataTransfer.setData('text/plain', JSON.stringify({ id: p.id, from: 'field' }));
     div.classList.add('dragging');
   });
   div.addEventListener('dragend', () => div.classList.remove('dragging'));
+  div.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); div.classList.add('drop-target'); });
+  div.addEventListener('dragleave', () => div.classList.remove('drop-target'));
+  div.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    div.classList.remove('drop-target');
+    handleDropOnPlayer(e, p.id, 'field');
+  });
   div.addEventListener('dblclick', () => openEdit(p.id, 'field'));
   return div;
 }
@@ -109,8 +157,64 @@ function renderBenchPlayer(p) {
   div.addEventListener('dragstart', (e) => {
     e.dataTransfer.setData('text/plain', JSON.stringify({ id: p.id, from: 'bench' }));
   });
+  div.addEventListener('dragover', (e) => { e.preventDefault(); e.stopPropagation(); div.classList.add('drop-target'); });
+  div.addEventListener('dragleave', () => div.classList.remove('drop-target'));
+  div.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    div.classList.remove('drop-target');
+    handleDropOnPlayer(e, p.id, 'bench');
+  });
   div.addEventListener('dblclick', () => openEdit(p.id, 'bench'));
   return div;
+}
+
+function handleDropOnPlayer(e, targetId, targetFrom) {
+  const data = JSON.parse(e.dataTransfer.getData('text/plain'));
+  if (data.id === targetId && data.from === targetFrom) return;
+
+  if (data.from === 'field' && targetFrom === 'field') {
+    const a = players.find(pl => pl.id === data.id);
+    const b = players.find(pl => pl.id === targetId);
+    if (a && b) {
+      const ax = a.x, ay = a.y, apos = a.pos;
+      a.x = b.x; a.y = b.y; a.pos = b.pos;
+      b.x = ax; b.y = ay; b.pos = apos;
+    }
+  } else if (data.from === 'bench' && targetFrom === 'field') {
+    const benchIdx = benchPlayers.findIndex(pl => pl.id === data.id);
+    const fieldIdx = players.findIndex(pl => pl.id === targetId);
+    if (benchIdx !== -1 && fieldIdx !== -1) {
+      const benchP = benchPlayers[benchIdx];
+      const fieldP = players[fieldIdx];
+      benchP.x = fieldP.x; benchP.y = fieldP.y; benchP.pos = fieldP.pos;
+      players[fieldIdx] = benchP;
+      benchPlayers[benchIdx] = fieldP;
+    }
+  } else if (data.from === 'field' && targetFrom === 'bench') {
+    const fieldIdx = players.findIndex(pl => pl.id === data.id);
+    const benchIdx = benchPlayers.findIndex(pl => pl.id === targetId);
+    if (fieldIdx !== -1 && benchIdx !== -1) {
+      const fieldP = players[fieldIdx];
+      const benchP = benchPlayers[benchIdx];
+      fieldP.x = 0; fieldP.y = 0;
+      players[fieldIdx] = { ...benchP, x: fieldP.x, y: fieldP.y, pos: fieldP.pos };
+      players[fieldIdx].x = players[fieldIdx].x;
+      const savedPos = { pos: benchP.pos };
+      players.splice(fieldIdx, 1);
+      const targetFieldSlot = fieldP;
+      benchPlayers[benchIdx] = fieldP;
+      players.splice(fieldIdx, 0, { ...benchP, x: targetFieldSlot.x, y: targetFieldSlot.y, pos: targetFieldSlot.pos });
+    }
+  } else if (data.from === 'bench' && targetFrom === 'bench') {
+    const a = benchPlayers.find(pl => pl.id === data.id);
+    const idxA = benchPlayers.findIndex(pl => pl.id === data.id);
+    const idxB = benchPlayers.findIndex(pl => pl.id === targetId);
+    if (idxA !== -1 && idxB !== -1) {
+      [benchPlayers[idxA], benchPlayers[idxB]] = [benchPlayers[idxB], benchPlayers[idxA]];
+    }
+  }
+  render();
 }
 
 fieldEl.addEventListener('dragover', (e) => {
@@ -180,12 +284,12 @@ document.getElementById('cancelEdit').addEventListener('click', () => {
   document.getElementById('editModal').classList.add('hidden');
 });
 
-formationSelect.addEventListener('change', () => buildFormation(formationSelect.value));
+formationSelect.addEventListener('change', () => changeFormation(formationSelect.value));
 kitColorInput.addEventListener('input', render);
 borderColorInput.addEventListener('input', render);
 teamNameInput.addEventListener('input', () => teamTitle.textContent = teamNameInput.value);
 
-document.getElementById('resetBtn').addEventListener('click', () => buildFormation(formationSelect.value));
+document.getElementById('resetBtn').addEventListener('click', () => initFormation(formationSelect.value));
 
 document.getElementById('exportImgBtn').addEventListener('click', () => {
   html2canvas(document.getElementById('capture-area'), { backgroundColor: '#10141c', scale: 2 }).then(canvas => {
@@ -230,6 +334,7 @@ document.getElementById('loadFileInput').addEventListener('change', (e) => {
       teamNameInput.value = data.teamName || 'Meu Time';
       teamTitle.textContent = teamNameInput.value;
       formationSelect.value = data.formation || '4-4-2';
+      currentFormation = formationSelect.value;
       kitColorInput.value = data.kitColor || '#1e5fd9';
       borderColorInput.value = data.borderColor || '#ffffff';
       players = data.players || [];
@@ -244,4 +349,4 @@ document.getElementById('loadFileInput').addEventListener('change', (e) => {
   e.target.value = '';
 });
 
-buildFormation('4-4-2');
+initFormation('4-4-2');
